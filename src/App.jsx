@@ -106,9 +106,8 @@ export default function App() {
   const avsMes     = avaliacoes.filter(a => a.mes === mes && (!busca || a.nome.toLowerCase().includes(busca.toLowerCase())))
   const pacsAgenda = pacientes.filter(p => {
     const temProc  = !procFiltro || p.procs?.[procFiltro]
-    const pendente = !procFiltro || !p.feitos?.[procFiltro]
     const buscaOk  = !busca || p.nome.toLowerCase().includes(busca.toLowerCase())
-    return temProc && pendente && buscaOk
+    return temProc && buscaOk
   })
 
   const contarPendentes = k => pacientes.filter(p => p.procs?.[k] && !p.feitos?.[k]).length
@@ -133,7 +132,7 @@ export default function App() {
   // ── LOADING / ERRO ──────────────────────────────────────
   if (loading) return (
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100vh", flexDirection:"column", gap:16 }}>
-      <div style={{ fontSize:40 }}>🦷</div>
+      <div style={{ fontSize:40 }}></div>
       <div style={{ fontSize:14, color:"var(--text2)" }}>Carregando dados...</div>
     </div>
   )
@@ -152,21 +151,21 @@ export default function App() {
       <div style={S.header}>
         <div style={S.headerInner}>
           <div style={S.logo}>
-            <div style={S.logoIcon}>🦷</div>
+            <div style={S.logoIcon}></div>
             <div>
               <div style={S.logoTitle}>Ficha de Progresso 2026</div>
               <div style={S.logoSub}>Controle de Tratamentos • {pacientes.length} pacientes</div>
             </div>
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            {salvando && <span style={S.savedTag}>✓ Salvo</span>}
+            {salvando && <span style={S.savedTag}>OK Salvo</span>}
             <input value={busca} onChange={e => setBusca(e.target.value)}
               placeholder="🔍 Buscar paciente..."
               style={S.searchInput} />
           </div>
         </div>
         <div style={S.nav}>
-          {[["agenda","📅 Agenda por Procedimento"],["progresso","✅ Progresso"],["avaliacoes","📋 Avaliações"]].map(([id,lbl]) => (
+          {[["agenda"," Agenda por Procedimento"],["progresso"," Progresso"],["avaliacoes"," Avaliações"]].map(([id,lbl]) => (
             <button key={id} onClick={() => { setPagina(id); setBusca("") }}
               style={{ ...S.navBtn, ...(pagina===id ? S.navAct : {}) }}>{lbl}</button>
           ))}
@@ -183,7 +182,7 @@ export default function App() {
                 <div style={S.secTitle}>Selecione o procedimento para montar a agenda</div>
                 <div style={S.secSub}>Clique em um procedimento para ver todos os pacientes pendentes</div>
               </div>
-              <button onClick={copiarLista} style={S.copyBtn}>📋 Copiar lista para WhatsApp</button>
+              <button onClick={copiarLista} style={S.copyBtn}> Copiar lista para WhatsApp</button>
             </div>
 
             <div style={S.procGrid}>
@@ -193,7 +192,7 @@ export default function App() {
                 return (
                   <div key={p.key} onClick={() => setProcFiltro(sel ? null : p.key)}
                     style={{ ...S.procCard, ...(sel ? { border:`2px solid ${p.color}`, background:p.bg } : {}) }}>
-                    <div style={{ fontSize:24, marginBottom:4 }}>{p.icon}</div>
+                    <div style={{ fontSize:13, fontWeight:700, marginBottom:4, color:sel?p.color:"var(--text2)", letterSpacing:-0.3 }}>{p.label.slice(0,3).toUpperCase()}</div>
                     <div style={{ fontSize:11, fontWeight:600, color:sel?p.color:"var(--text2)" }}>{p.label}</div>
                     <div style={{ fontSize:26, fontWeight:700, color:sel?p.color:"var(--text)", lineHeight:1.1 }}>{cnt}</div>
                     <div style={{ fontSize:10, color:"var(--text3)" }}>pendente{cnt!==1?"s":""}</div>
@@ -212,20 +211,25 @@ export default function App() {
               {pacsAgenda.length === 0
                 ? <div style={S.empty}>Nenhum paciente encontrado</div>
                 : pacsAgenda.map(p => (
-                  <div key={p.id} style={S.pacRow}>
-                    <div style={{ ...S.avatar, background:"#eff6ff", color:"#1d6fd8" }}>{iniciais(p.nome)}</div>
+                  <div key={p.id} style={{ ...S.pacRow, borderLeft: procFiltro && p.feitos?.[procFiltro] ? "4px solid #16a34a" : procFiltro ? "4px solid #f59e0b" : "none" }}>
+                    <div style={{ ...S.avatar, background: procFiltro && p.feitos?.[procFiltro] ? "#f0fdf4" : "#eff6ff", color: procFiltro && p.feitos?.[procFiltro] ? "#16a34a" : "#1d6fd8" }}>
+                      {procFiltro && p.feitos?.[procFiltro] ? "✓" : iniciais(p.nome)}
+                    </div>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={S.pacName}>{p.nome}</div>
+                      <div style={{ ...S.pacName, textDecoration: procFiltro && p.feitos?.[procFiltro] ? "none" : "none" }}>{p.nome}</div>
                       <div style={S.pacSub}>
                         📅 {p.mes} 2026
                         {procFiltro && p.procs?.[procFiltro] && p.procs[procFiltro]!=="1"
                           ? ` · ${procFiltro}: ${p.procs[procFiltro]}` : ""}
                       </div>
-                      <div style={{ display:"flex", gap:4, flexWrap:"wrap", marginTop:4 }}>
-                        {Object.keys(p.procs||{}).filter(k=>k!==procFiltro&&k!=="Limpezas"&&!p.feitos?.[k]).slice(0,3).map(k=>(
-                          <span key={k} style={S.tagPend}>⏳ {k}</span>
-                        ))}
-                      </div>
+                      {procFiltro && (
+                        <div style={{ marginTop:4 }}>
+                          {p.feitos?.[procFiltro]
+                            ? <span style={{ fontSize:11, background:"#f0fdf4", color:"#16a34a", padding:"2px 8px", borderRadius:6, fontWeight:600 }}>✅ Feito</span>
+                            : <span style={{ fontSize:11, background:"#fefce8", color:"#ca8a04", padding:"2px 8px", borderRadius:6, fontWeight:600 }}>⏳ Pendente</span>
+                          }
+                        </div>
+                      )}
                     </div>
                     <button onClick={() => setModal({ tipo:"paciente", item:p, mesAlvo:p.mes })} style={S.editBtn}>✏️</button>
                   </div>
@@ -265,12 +269,12 @@ export default function App() {
                     <div key={p.id} style={S.card}>
                       <div style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:total?12:0 }}>
                         <div style={{ ...S.avatar, background:pct===100?"#f0fdf4":"#eff6ff", color:pct===100?"#16a34a":"#1d6fd8" }}>
-                          {pct===100 ? "✓" : iniciais(p.nome)}
+                          {pct===100 ? "OK" : iniciais(p.nome)}
                         </div>
                         <div style={{ flex:1 }}>
                           <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
                             <span style={{ fontWeight:600, fontSize:14 }}>{p.nome}</span>
-                            {pct===100 && <span style={{ ...S.tagFeito, fontSize:11 }}>✅ Concluído</span>}
+                            {pct===100 && <span style={{ ...S.tagFeito, fontSize:11 }}> Concluído</span>}
                           </div>
                           {total > 0 && (
                             <div style={{ marginTop:6 }}>
@@ -283,7 +287,7 @@ export default function App() {
                               </div>
                             </div>
                           )}
-                          {p.obs && <div style={{ fontSize:11, color:"var(--text3)", marginTop:4 }}>📝 {p.obs}</div>}
+                          {p.obs && <div style={{ fontSize:11, color:"var(--text3)", marginTop:4 }}> {p.obs}</div>}
                         </div>
                         <button onClick={() => setModal({ tipo:"paciente", item:p, mesAlvo:mes })} style={S.editBtn}>✏️</button>
                       </div>
@@ -298,7 +302,7 @@ export default function App() {
                                   borderRadius:8, cursor:"pointer",
                                   border:`1px solid ${feito?"#bbf7d0":"#e2e8f0"}`,
                                   background:feito?"#f0fdf4":"#f8fafc", fontSize:12, transition:"all 0.15s" }}>
-                                <span style={{ fontSize:13 }}>{feito?"✅":"⏳"}</span>
+                                <span style={{ fontSize:13 }}>{feito?"":""}</span>
                                 <span style={{ fontWeight:500, color:feito?"#16a34a":"var(--text)" }}>{proc}</span>
                                 {det && det!=="1" && <span style={{ color:"var(--text3)", fontSize:11 }}>{det.length>12?det.slice(0,12)+"…":det}</span>}
                               </div>
@@ -357,8 +361,8 @@ export default function App() {
                       <div style={{ ...S.avatar, background:cfg.bg, color:cfg.color }}>{iniciais(a.nome)}</div>
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={S.pacName}>{a.nome}</div>
-                        <div style={S.pacSub}>📅 {a.data}</div>
-                        {a.obs && <div style={{ fontSize:11, color:"var(--text3)" }}>📝 {a.obs}</div>}
+                        <div style={S.pacSub}> {a.data}</div>
+                        {a.obs && <div style={{ fontSize:11, color:"var(--text3)" }}> {a.obs}</div>}
                       </div>
                       <span style={{ padding:"4px 12px", borderRadius:8, fontSize:12, fontWeight:600,
                         background:cfg.bg, color:cfg.color, border:`1px solid ${cfg.border}`, flexShrink:0 }}>
@@ -463,10 +467,10 @@ function ModalPaciente({ item, mesAlvo, onSave, onDelete, onClose }) {
         </div>
       </div>
       <div style={S.mFtr}>
-        {item && <button onClick={()=>onDelete(item.id)} style={S.delBtn}>🗑 Excluir</button>}
+        {item && <button onClick={()=>onDelete(item.id)} style={S.delBtn}> Excluir</button>}
         <div style={{ display:"flex", gap:8, marginLeft:"auto" }}>
           <button onClick={onClose} style={S.secBtn}>Cancelar</button>
-          <button onClick={()=>local.nome.trim()&&onSave(local,mesSel)} style={S.priBtn}>💾 Salvar</button>
+          <button onClick={()=>local.nome.trim()&&onSave(local,mesSel)} style={S.priBtn}> Salvar</button>
         </div>
       </div>
     </div>
@@ -511,10 +515,10 @@ function ModalAvaliacao({ item, mes, onSave, onDelete, onClose }) {
           placeholder="Anotações..." style={{...S.input,minHeight:55,resize:"vertical"}} />
       </div>
       <div style={S.mFtr}>
-        {item && <button onClick={()=>onDelete(item.id)} style={S.delBtn}>🗑 Excluir</button>}
+        {item && <button onClick={()=>onDelete(item.id)} style={S.delBtn}> Excluir</button>}
         <div style={{ display:"flex", gap:8, marginLeft:"auto" }}>
           <button onClick={onClose} style={S.secBtn}>Cancelar</button>
-          <button onClick={()=>local.nome.trim()&&onSave(local)} style={S.priBtn}>💾 Salvar</button>
+          <button onClick={()=>local.nome.trim()&&onSave(local)} style={S.priBtn}> Salvar</button>
         </div>
       </div>
     </div>
