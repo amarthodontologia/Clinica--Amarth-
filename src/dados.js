@@ -5,18 +5,18 @@ export const PROCEDIMENTOS = [
 ]
 
 export const PROC_CFG = [
-  { key:"Cirurgias",        color:"#dc2626", bg:"#fef2f2", label:"Cirurgias"        },
-  { key:"Implantes",        color:"#7c3aed", bg:"#f5f3ff", label:"Implantes"        },
-  { key:"Ortodontia",       color:"#1d6fd8", bg:"#eff6ff", label:"Ortodontia"       },
-  { key:"Restauracoes",     color:"#0d9488", bg:"#f0fdfa", label:"Restauracoes"     },
-  { key:"Limpezas",         color:"#16a34a", bg:"#f0fdf4", label:"Limpezas"         },
-  { key:"Clareamento",      color:"#ca8a04", bg:"#fefce8", label:"Clareamento"      },
-  { key:"Proteses",         color:"#ea580c", bg:"#fff7ed", label:"Proteses"         },
-  { key:"Endodontia",       color:"#be185d", bg:"#fdf2f8", label:"Endodontia"       },
-  { key:"Lentes Porcelana", color:"#0369a1", bg:"#f0f9ff", label:"Lentes Porcelana" },
-  { key:"Lentes Resina",    color:"#4f46e5", bg:"#eef2ff", label:"Lentes Resina"    },
-  { key:"Invisa",           color:"#0891b2", bg:"#ecfeff", label:"Invisalign"       },
-  { key:"Placas",           color:"#65a30d", bg:"#f7fee7", label:"Placas"           },
+  { key:"Cirurgias",        icon:"✂️",  color:"#dc2626", bg:"#fef2f2", label:"Cirurgias"        },
+  { key:"Implantes",        icon:"🔩",  color:"#7c3aed", bg:"#f5f3ff", label:"Implantes"        },
+  { key:"Ortodontia",       icon:"📐",  color:"#1d6fd8", bg:"#eff6ff", label:"Ortodontia"       },
+  { key:"Restauracoes",     icon:"🦷",  color:"#0d9488", bg:"#f0fdfa", label:"Restauracoes"     },
+  { key:"Limpezas",         icon:"✨",  color:"#16a34a", bg:"#f0fdf4", label:"Limpezas"         },
+  { key:"Clareamento",      icon:"⚡",  color:"#ca8a04", bg:"#fefce8", label:"Clareamento"      },
+  { key:"Proteses",         icon:"🦴",  color:"#ea580c", bg:"#fff7ed", label:"Proteses"         },
+  { key:"Endodontia",       icon:"🩺",  color:"#be185d", bg:"#fdf2f8", label:"Endodontia"       },
+  { key:"Lentes Porcelana", icon:"💎",  color:"#0369a1", bg:"#f0f9ff", label:"Lentes Porcelana" },
+  { key:"Lentes Resina",    icon:"💎",  color:"#4f46e5", bg:"#eef2ff", label:"Lentes Resina"    },
+  { key:"Invisa",           icon:"👁",  color:"#0891b2", bg:"#ecfeff", label:"Invisalign"       },
+  { key:"Placas",           icon:"🛡",  color:"#65a30d", bg:"#f7fee7", label:"Placas"           },
 ]
 
 export const STATUS_AV = ["Aprovado","Faltou","Em Aberto","Follow Up","Reprovado","Pendente"]

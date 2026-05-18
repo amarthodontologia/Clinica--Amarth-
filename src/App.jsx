@@ -192,7 +192,7 @@ export default function App() {
                 return (
                   <div key={p.key} onClick={() => setProcFiltro(sel ? null : p.key)}
                     style={{ ...S.procCard, ...(sel ? { border:`2px solid ${p.color}`, background:p.bg } : {}) }}>
-                    <div style={{ fontSize:13, fontWeight:700, marginBottom:4, color:sel?p.color:"var(--text2)", letterSpacing:-0.3 }}>{p.label.slice(0,3).toUpperCase()}</div>
+                    <div style={{ fontSize:26, marginBottom:4 }}>{p.icon}</div>
                     <div style={{ fontSize:11, fontWeight:600, color:sel?p.color:"var(--text2)" }}>{p.label}</div>
                     <div style={{ fontSize:26, fontWeight:700, color:sel?p.color:"var(--text)", lineHeight:1.1 }}>{cnt}</div>
                     <div style={{ fontSize:10, color:"var(--text3)" }}>pendente{cnt!==1?"s":""}</div>
